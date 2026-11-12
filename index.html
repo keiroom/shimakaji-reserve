@@ -5,17 +5,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>予約｜3Dプリンター ワークショップ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Dela+Gothic+One&display=swap">
 <style>
 :root{
   --ink:#1E2B44; --ink-2:#4A566C; --line:#D9D2C3; --paper:#FBF4E6; --card:#FFFFFF;
   --blue:#1D9BCB; --blue-l:#E3F4FB; --green:#2F8F4E; --green-l:#E4F4E9;
   --red:#D93A3A; --red-l:#FDECEC; --yellow:#FFC83A; --grey:#9AA0A6; --grey-l:#EEF0F2;
-  --r:18px; --pop:'Dela Gothic One','Zen Maru Gothic',sans-serif;
+  --r:18px; --font:'Hiragino Maru Gothic ProN','Hiragino Sans','BIZ UDPGothic','Yu Gothic UI','Meiryo','Noto Sans JP',system-ui,sans-serif; --pop:var(--font);
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;font-weight:700;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-weight:700;-webkit-tap-highlight-color:transparent}
 body{background-image:repeating-linear-gradient(180deg,rgba(30,43,68,.035) 0 2px,transparent 2px 14px)}
 button{font:inherit;color:inherit}
 .wrap{max-width:520px;margin:0 auto;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
@@ -25,7 +23,7 @@ button{font:inherit;color:inherit}
 .tag{padding:5px 12px;border-radius:999px;font-size:12px;letter-spacing:.04em}
 .tag.dark{background:var(--ink);color:#fff}
 .tag.line{background:#fff;border:2px solid var(--ink)}
-h1{margin:0;font-family:var(--pop);font-weight:400;font-size:26px;line-height:1.3;letter-spacing:.01em}
+h1{margin:0;font-family:var(--pop);font-weight:900;font-size:26px;line-height:1.3;letter-spacing:.01em}
 h1 .hl{color:var(--blue)}
 .meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
 .meta span{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-size:13px;color:var(--ink-2)}
@@ -71,7 +69,7 @@ h1 .hl{color:var(--blue)}
 .slot .no{font-size:12px;color:var(--ink-2);text-align:center;line-height:1;padding:6px 8px;border-radius:10px;background:var(--paper);white-space:nowrap}
 .slot .no b{font-family:var(--pop);font-size:16px;color:var(--ink);margin:0 1px}
 .slot .tm{font-family:var(--pop);font-size:21px;letter-spacing:.01em}
-.slot .tm small{font-family:'Zen Maru Gothic',sans-serif;font-size:13px;color:var(--ink-2);font-weight:700;margin-left:2px}
+.slot .tm small{font-family:var(--font);font-size:13px;color:var(--ink-2);font-weight:700;margin-left:2px}
 .seats{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .dots{display:flex;gap:4px}
 .dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink)}
@@ -107,7 +105,7 @@ h1 .hl{color:var(--blue)}
 .stepper button{width:56px;height:52px;border:0;background:none;font-size:24px;cursor:pointer}
 .stepper button:disabled{color:#C9CDD2}
 .stepper output{min-width:70px;text-align:center;font-family:var(--pop);font-size:22px}
-.stepper output small{font-family:'Zen Maru Gothic',sans-serif;font-size:13px;margin-left:2px}
+.stepper output small{font-family:var(--font);font-size:13px;margin-left:2px}
 
 /* ボタン */
 .btn{width:100%;min-height:60px;border:2.5px solid var(--ink);border-radius:999px;background:var(--yellow);font-size:18px;font-weight:900;cursor:pointer;
@@ -117,19 +115,25 @@ h1 .hl{color:var(--blue)}
 .btn.ghost{background:#fff}
 .spin{width:20px;height:20px;border-radius:50%;border:3px solid rgba(30,43,68,.25);border-top-color:var(--ink);animation:rot .8s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
+.holdbar{display:flex;align-items:center;gap:8px;margin:-6px 0 16px;padding:8px 12px;border-radius:10px;background:#FFF6DA;font-size:13px;color:#7A5B12}
+.holdbar.ok{display:block;line-height:1.6;background:var(--green-l);color:var(--green)}
+.holdbar b{font-variant-numeric:tabular-nums}
+.spin.sm{width:14px;height:14px;border-width:2px}
+.slot.is-loading{cursor:progress}
+.badge.wait{background:var(--grey-l);color:#6B7280}
 .note{margin:12px 2px 0;font-size:11px;line-height:1.6;color:var(--ink-2)}
 
 /* 完了 */
 .done{text-align:center}
 .check{width:84px;height:84px;margin:4px auto 10px;border-radius:50%;background:var(--green);display:grid;place-items:center;border:3px solid var(--ink);animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
 @keyframes pop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
-.done h2{margin:0 0 4px;font-family:var(--pop);font-weight:400;font-size:28px}
+.done h2{margin:0 0 4px;font-family:var(--pop);font-weight:900;font-size:28px}
 .done .sub{margin:0 0 16px;font-size:14px;color:var(--ink-2)}
 .ticket{position:relative;margin:0 auto 16px;border:2.5px solid var(--ink);border-radius:16px;background:#fff;overflow:hidden;text-align:left}
 .ticket .th{background:var(--ink);color:#fff;padding:10px 16px;font-size:12px;display:flex;justify-content:space-between}
 .ticket .idn{padding:14px 16px 6px;border-bottom:2px dashed var(--line);text-align:center}
 .ticket .idn small{display:block;font-size:11px;color:var(--ink-2)}
-.ticket .idn b{font-family:var(--pop);font-weight:400;font-size:40px;letter-spacing:.06em}
+.ticket .idn b{font-family:var(--pop);font-weight:900;font-size:40px;letter-spacing:.06em}
 .ticket dl{margin:0;padding:12px 16px 14px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
 .ticket dt{color:var(--ink-2);font-size:12px;align-self:center}
 .ticket dd{margin:0}
@@ -185,6 +189,7 @@ h1 .hl{color:var(--blue)}
       <div><div class="t1" id="cDay"></div><div class="t2" id="cTime"></div></div>
       <button type="button" id="change">変更</button>
     </div>
+    <p class="holdbar" id="holdbar" aria-live="polite"><span class="spin sm" aria-hidden="true"></span>この時間をおさえています…</p>
     <form id="form" novalidate>
       <div class="field">
         <label for="name">お名前 <span class="req">必須</span></label>
@@ -233,14 +238,25 @@ h1 .hl{color:var(--blue)}
 const API_URL = 'https://script.google.com/macros/s/AKfycbx3PrzRZXgNVWU5U_k5mPd4rOCh1G9EKKGHXF32jB3z_ADjDe2ScGwyrwnPU1YPOREnOg/exec';
 
 let preAv = null;
+/* 通信が終わる前でも時間の一覧をすぐ出すための初期値（スプシの「設定」と同じ内容。通信後はスプシの値で上書き） */
+const DEFAULT_CFG = (() => {
+  const base = [['09:00','09:45'],['10:15','11:00'],['11:30','12:15'],['12:45','13:30'],['14:00','14:45'],['15:15','16:00'],['16:15','17:00']];
+  const dates = [{date:'2026-11-21',label:'11月21日（土）'},{date:'2026-11-22',label:'11月22日（日）'}], slots = {};
+  dates.forEach(d => { slots[d.date] = base.map((t, i) => ({no:i + 1, start:t[0], end:t[1], cap:2})); });
+  return {capacity:2, holdMinutes:5, dates:dates, slots:slots};
+})();
 const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
 const MODE = IS_GAS ? 'gas' : API_URL ? 'api' : 'demo';
 async function call(fn, arg){
   if (MODE === 'gas') return new Promise((ok, ng) => { const r = google.script.run.withSuccessHandler(ok).withFailureHandler(ng); arg === undefined ? r[fn]() : r[fn](arg); });
   if (MODE === 'api'){
-    const res = fn === 'reserve'
-      ? await fetch(API_URL, {method:'POST', body:JSON.stringify(arg)})          // text/plain で送る（Apps Script の CORS 対策）
-      : await fetch(API_URL + '?action=' + (fn === 'getConfig' ? 'init' : 'availability') + '&t=' + Date.now());
+    let res;
+    if (fn === 'reserve') res = await fetch(API_URL, {method:'POST', body:JSON.stringify(arg)});   // text/plain で送る（Apps Script の CORS 対策）
+    else {
+      const q = new URLSearchParams({action: {getConfig:'init', getAvailability:'availability', hold:'hold', release:'release'}[fn], t: Date.now()});
+      if (arg) Object.keys(arg).forEach(k => { if (arg[k] !== undefined && arg[k] !== '') q.set(k, arg[k]); });
+      res = await fetch(API_URL + '?' + q.toString());
+    }
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     if (fn === 'getConfig'){ preAv = data.availability; return data.config; }   // 設定と空き状況を1回で受け取る
@@ -258,6 +274,8 @@ const Demo = (() => {
   const wait = (v) => new Promise(r => setTimeout(() => r(v), 350));
   return {
     getConfig: () => wait(cfg),
+    hold: (f) => { const k = f.date + '|' + f.no, t = taken[k] || 0; return wait(t >= 2 ? {ok:false, reason:'full', message:'ごめんなさい。この回はちょうど満員になりました。'} : {ok:true, hold:'demo' + Date.now(), expiresInSec:300}); },
+    release: () => wait({ok:true}),
     getAvailability: () => { const out = {}; cfg.dates.forEach(d => cfg.slots[d.date].forEach(s => { const k = d.date + '|' + s.no, t = taken[k] || 0; out[k] = {taken:t, cap:s.cap, left:s.cap - t, closed:false}; }));
       return wait({slots:out}); },
     reserve: (f) => { const k = f.date + '|' + f.no, t = taken[k] || 0;
@@ -269,7 +287,7 @@ const Demo = (() => {
 
 /* ---------- 状態 ---------- */
 const $ = (s) => document.querySelector(s);
-const st = {cfg:null, av:{}, date:null, slot:null, sending:false};
+const st = {cfg:null, av:null, date:null, slot:null, sending:false, hold:null, holdP:null, holdT:null};
 const pad = (n) => String(n).padStart(2, '0');
 const slotsOf = (date) => (st.cfg.slots[date] || []);
 
@@ -280,29 +298,29 @@ function setStep(n){
 }
 function toast(msg, warn){ const t = $('#toast'); t.textContent = msg; t.classList.toggle('warn', !!warn); t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 4200); }
 
-function dayLeft(date){ return slotsOf(date).reduce((a, s) => { const v = st.av[date + '|' + s.no]; return a + (v && !v.closed ? v.left : 0); }, 0); }
+function dayLeft(date){ if (!st.av) return null; return slotsOf(date).reduce((a, s) => { const v = st.av[date + '|' + s.no]; return a + (v && !v.closed ? v.left : 0); }, 0); }
 function renderDays(){
   $('#days').innerHTML = st.cfg.dates.map(d => {
     const m = d.label.match(/(\d+)月(\d+)日（(.)）/), left = dayLeft(d.date);
     return '<button type="button" class="day" data-date="' + d.date + '" aria-pressed="' + (d.date === st.date) + '">'
       + '<span class="w">' + m[1] + '月</span><span class="d">' + m[2] + '日（' + m[3] + '）</span>'
-      + '<span class="r">' + (left > 0 ? 'あと ' + left + ' 名 予約できます' : '受付は終了しました') + '</span></button>';
+      + '<span class="r">' + (left === null ? '空きを確認中…' : left > 0 ? 'あと ' + left + ' 名 予約できます' : '受付は終了しました') + '</span></button>';
   }).join('');
-  document.querySelectorAll('.day').forEach(b => b.addEventListener('click', () => { st.date = b.dataset.date; renderDays(); renderSlots(); }));
+  document.querySelectorAll('.day').forEach(b => b.addEventListener('click', () => { st.date = b.dataset.date; st.picked = true; renderDays(); renderSlots(); }));
 }
 function renderSlots(){
   $('#slots').innerHTML = slotsOf(st.date).map(s => {
-    const v = st.av[st.date + '|' + s.no] || {taken:0, cap:s.cap, left:s.cap, closed:false};
+    const v = (st.av && st.av[st.date + '|' + s.no]) || {taken:0, cap:s.cap, left:s.cap, closed:false};
     const cap = v.cap != null ? v.cap : s.cap;
-    const state = v.closed ? 'closed' : v.left <= 0 ? 'full' : v.left === 1 ? 'last' : 'ok';
-    const label = {ok:'あと ' + v.left + ' 名', last:'のこり1名！', full:'満員', closed:'受付終了'}[state];
+    const state = !st.av ? 'loading' : v.closed ? 'closed' : v.left <= 0 ? 'full' : v.left === 1 ? 'last' : 'ok';
+    const label = {loading:'確認中', ok:'あと ' + v.left + ' 名', last:'のこり1名！', full:'満員', closed:'受付終了'}[state];
     const dots = Array.from({length:cap}, (_, i) => '<i class="' + (i < v.taken ? 'taken' : 'free') + '"></i>').join('');
-    const dis = state === 'full' || state === 'closed';
+    const dis = state === 'full' || state === 'closed' || state === 'loading';
     return '<button type="button" class="slot is-' + state + '" data-no="' + s.no + '"' + (dis ? ' disabled aria-disabled="true"' : '')
       + ' aria-label="第' + s.no + '回 ' + s.start + 'から' + s.end + ' ' + label + '">'
       + '<span class="no">第<b>' + s.no + '</b>回</span>'
       + '<span class="tm">' + s.start.replace(/^0/, '') + '<small>〜' + s.end.replace(/^0/, '') + '</small></span>'
-      + '<span class="seats"><span class="dots" aria-hidden="true">' + dots + '</span><span class="badge ' + state + '">' + label + '</span></span></button>';
+      + '<span class="seats"><span class="dots" aria-hidden="true">' + dots + '</span><span class="badge ' + (state === 'loading' ? 'wait' : state) + '">' + label + '</span></span></button>';
   }).join('');
   document.querySelectorAll('.slot:not([disabled])').forEach(b => b.addEventListener('click', () => pickSlot(+b.dataset.no)));
 }
@@ -312,7 +330,7 @@ async function loadAvailability(quiet){
     st.av = r.slots;
     const d = new Date();
     $('#updated').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' 時点の空き状況';
-    if (!st.date){
+    if (!st.date || (!st.picked && dayLeft(st.date) === 0)){
       st.date = (st.cfg.dates.find(x => dayLeft(x.date) > 0) || st.cfg.dates[0]).date;
     }
     renderDays(); renderSlots();
@@ -324,10 +342,31 @@ function pickSlot(no){
   const d = st.cfg.dates.find(x => x.date === st.date);
   $('#cDay').textContent = d.label + '　第' + no + '回';
   $('#cTime').textContent = st.slot.start.replace(/^0/, '') + ' 〜 ' + st.slot.end.replace(/^0/, '');
-  const v = st.av[st.date + '|' + no];
-  if (v && v.left === 1) toast('この回は のこり1名です。お早めにどうぞ！', true);
   setStep(2);
+  // 選んだ瞬間に仮押さえ（先に選んだ人が優先）。入力しているあいだに通信する
+  const hb = $('#holdbar'); hb.className = 'holdbar'; hb.innerHTML = '<span class="spin sm" aria-hidden="true"></span>この時間をおさえています…';
+  clearInterval(st.holdT);
+  const prev = st.hold; st.hold = null;
+  st.holdP = call('hold', {date:st.date, no:no, hold:prev || ''}).then(r => {
+    if (!r.ok){ toast(r.message || 'この時間はえらべませんでした。', true); backToList(); return null; }
+    st.hold = r.hold; startHoldTimer(r.expiresInSec || 300); return r.hold;
+  }).catch(() => { hb.textContent = '通信に時間がかかっています。このまま入力して送信できます。'; return null; });
   setTimeout(() => $('#name').focus({preventScroll:true}), 350);
+}
+function startHoldTimer(sec){
+  const hb = $('#holdbar'), end = Date.now() + sec * 1000;
+  const tick = () => {
+    const left = Math.max(0, Math.round((end - Date.now()) / 1000));
+    hb.className = 'holdbar ok';
+    hb.innerHTML = '✓ この時間をおさえました。あと <b>' + Math.floor(left / 60) + ':' + pad(left % 60) + '</b> のあいだに送信してください';
+    if (left <= 0){ clearInterval(st.holdT); st.hold = null; toast('時間切れになりました。もう一度 時間をえらんでください。', true); backToList(); }
+  };
+  tick(); st.holdT = setInterval(tick, 1000);
+}
+function backToList(){
+  clearInterval(st.holdT);
+  if (st.hold){ call('release', {hold:st.hold}).catch(() => {}); st.hold = null; }
+  setStep(1); loadAvailability(true);
 }
 
 async function submit(e){
@@ -338,16 +377,19 @@ async function submit(e){
   st.sending = true;
   const btn = $('#submit'); btn.disabled = true; btn.innerHTML = '<span class="spin" aria-hidden="true"></span>送信中…';
   try {
-    const r = await call('reserve', {date:st.date, no:st.slot.no, name:name, tel:$('#tel').value.trim()});
+    if (st.holdP) await st.holdP;                    // 仮押さえの通信が終わってから送る
+    if ($('#s2').classList.contains('hide')) return;  // 仮押さえに失敗して一覧に戻った
+    const r = await call('reserve', {date:st.date, no:st.slot.no, name:name, tel:$('#tel').value.trim(), hold:st.hold || ''});
     if (r.ok){
       const x = r.reservation;
       $('#tId').textContent = x.id; $('#tDay').textContent = x.dateLabel + '　第' + x.no + '回';
       $('#tTime').textContent = x.time.replace(/(^|〜)0/g, '$1'); $('#tName').textContent = x.name + ' さま';
+      clearInterval(st.holdT); st.hold = null;
       $('#toast').classList.remove('on'); setStep(3);
       loadAvailability(true);
     } else {
       toast(r.message || '予約できませんでした。', true);
-      if (r.reason === 'full' || r.reason === 'closed'){ await loadAvailability(true); setStep(1); }
+      if (r.reason === 'full' || r.reason === 'closed') backToList();
     }
   } catch (err){
     toast('送信できませんでした。電波のよい場所でもう一度お試しください。', true);
@@ -358,14 +400,19 @@ async function submit(e){
 
 async function init(){
   if (MODE === 'demo') $('#demo').classList.remove('hide');
-  st.cfg = await call('getConfig');
-  setStep(1);
+  st.cfg = DEFAULT_CFG; st.date = st.cfg.dates[0].date;   // まず一覧を出す
+  setStep(1); renderDays(); renderSlots();
+  try { st.cfg = await call('getConfig'); } catch (e){ toast('空き状況を読みこめませんでした。電波のよい場所でもう一度お試しください。', true); return; }
+  if (!st.cfg.dates.some(d => d.date === st.date)) st.date = null;
   await loadAvailability();
   setInterval(() => { if (!$('#s1').classList.contains('hide')) loadAvailability(true); }, 20000);
 }
 $('#reload').addEventListener('click', () => loadAvailability());
-$('#change').addEventListener('click', () => { setStep(1); loadAvailability(true); });
+$('#change').addEventListener('click', backToList);
 $('#form').addEventListener('submit', submit);
+window.addEventListener('pagehide', () => {
+  if (st.hold && MODE === 'api' && navigator.sendBeacon) navigator.sendBeacon(API_URL + '?action=release&hold=' + encodeURIComponent(st.hold));
+});
 init();
 </script>
 </body>
