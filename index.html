@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>予約｜3Dプリンター ワークショップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Dela+Gothic+One&display=swap">
+<style>
+:root{
+  --ink:#1E2B44; --ink-2:#4A566C; --line:#D9D2C3; --paper:#FBF4E6; --card:#FFFFFF;
+  --blue:#1D9BCB; --blue-l:#E3F4FB; --green:#2F8F4E; --green-l:#E4F4E9;
+  --red:#D93A3A; --red-l:#FDECEC; --yellow:#FFC83A; --grey:#9AA0A6; --grey-l:#EEF0F2;
+  --r:18px; --pop:'Dela Gothic One','Zen Maru Gothic',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;font-weight:700;-webkit-tap-highlight-color:transparent}
+body{background-image:repeating-linear-gradient(180deg,rgba(30,43,68,.035) 0 2px,transparent 2px 14px)}
+button{font:inherit;color:inherit}
+.wrap{max-width:520px;margin:0 auto;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
+
+/* ヘッダー */
+.top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.tag{padding:5px 12px;border-radius:999px;font-size:12px;letter-spacing:.04em}
+.tag.dark{background:var(--ink);color:#fff}
+.tag.line{background:#fff;border:2px solid var(--ink)}
+h1{margin:0;font-family:var(--pop);font-weight:400;font-size:26px;line-height:1.3;letter-spacing:.01em}
+h1 .hl{color:var(--blue)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.meta span{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-size:13px;color:var(--ink-2)}
+.meta b{color:var(--ink)}
+
+/* ステップ表示 */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:16px 0 14px;padding:0;list-style:none;counter-reset:s}
+.steps li{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--grey)}
+.steps li::before{counter-increment:s;content:counter(s);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  background:#fff;border:2px solid var(--line);color:var(--grey);font-family:var(--pop);font-size:14px;position:relative;z-index:1}
+.steps li:not(:last-child)::after{content:"";position:absolute;top:15px;left:calc(50% + 18px);right:calc(-50% + 18px);height:2px;background:var(--line)}
+.steps li.on{color:var(--ink)}
+.steps li.on::before{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps li.done{color:var(--green)}
+.steps li.done::before{content:"✓";background:var(--green);border-color:var(--green);color:#fff}
+.steps li.done::after{background:var(--green)}
+
+/* カード */
+.card{background:var(--card);border:2.5px solid var(--ink);border-radius:var(--r);box-shadow:0 5px 0 var(--ink);padding:16px}
+.q{margin:0 0 10px;font-size:17px;display:flex;align-items:center;gap:8px}
+.q .n{width:24px;height:24px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);display:grid;place-items:center;font-family:var(--pop);font-size:12px}
+
+/* 日にち */
+.days{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.day{padding:12px 8px;border-radius:14px;border:2.5px solid var(--line);background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .1s}
+.day .d{font-family:var(--pop);font-size:22px;line-height:1.2}
+.day .w{font-size:12px;color:var(--ink-2)}
+.day .r{font-size:11px;color:var(--ink-2);margin-top:2px}
+.day[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.day[aria-pressed="true"] .w,.day[aria-pressed="true"] .r{color:#C9D3E3}
+.day:active{transform:scale(.97)}
+
+/* 凡例 */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px;font-size:11px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* 時間（枠） */
+.slots{display:flex;flex-direction:column;gap:9px}
+.slot{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;
+  border:2.5px solid var(--ink);background:#fff;cursor:pointer;text-align:left;box-shadow:0 3px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+.slot:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.slot .no{font-size:12px;color:var(--ink-2);text-align:center;line-height:1;padding:6px 8px;border-radius:10px;background:var(--paper);white-space:nowrap}
+.slot .no b{font-family:var(--pop);font-size:16px;color:var(--ink);margin:0 1px}
+.slot .tm{font-family:var(--pop);font-size:21px;letter-spacing:.01em}
+.slot .tm small{font-family:'Zen Maru Gothic',sans-serif;font-size:13px;color:var(--ink-2);font-weight:700;margin-left:2px}
+.seats{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.dots{display:flex;gap:4px}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink)}
+.dots i.free{background:var(--green)}
+.dots i.taken{background:var(--grey-l);border-color:var(--grey)}
+.badge{font-size:12px;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge.ok{background:var(--green-l);color:var(--green)}
+.badge.last{background:var(--red);color:#fff;animation:pulse 1.6s ease-in-out infinite}
+.badge.full,.badge.closed{background:var(--grey-l);color:#6B7280}
+.slot.is-last{border-color:var(--red);box-shadow:0 3px 0 var(--red)}
+.slot.is-last .dots i.free{background:var(--red)}
+.slot.is-full,.slot.is-closed{border-color:#C9CDD2;box-shadow:none;background:#F6F7F8;cursor:not-allowed;color:#8A9099}
+.slot.is-full .tm,.slot.is-closed .tm,.slot.is-full .no b,.slot.is-closed .no b{color:#8A9099}
+.slot.is-full .tm{text-decoration:line-through;text-decoration-thickness:2px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.updated{margin:10px 2px 0;font-size:11px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.updated button{border:0;background:none;color:var(--blue);padding:4px;cursor:pointer;font-size:11px;text-decoration:underline}
+
+/* 入力 */
+.chosen{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--blue-l);border:2px solid var(--blue);margin-bottom:16px}
+.chosen .ic{width:40px;height:40px;border-radius:12px;background:var(--blue);display:grid;place-items:center;flex:none}
+.chosen .t1{font-size:12px;color:var(--ink-2)}
+.chosen .t2{font-family:var(--pop);font-size:18px;line-height:1.3}
+.chosen button{margin-left:auto;border:2px solid var(--ink);background:#fff;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label{font-size:14px;display:flex;align-items:center;gap:6px}
+.req{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--red);color:#fff}
+.opt{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--grey-l);color:var(--ink-2)}
+.field input{width:100%;font:inherit;font-size:18px;padding:13px 14px;border-radius:12px;border:2.5px solid var(--line);background:#fff;color:var(--ink);outline:none}
+.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(29,155,203,.18)}
+.field .hint{font-size:11px;color:var(--ink-2)}
+.stepper{display:flex;align-items:center;gap:0;border:2.5px solid var(--line);border-radius:12px;background:#fff;width:max-content}
+.stepper button{width:56px;height:52px;border:0;background:none;font-size:24px;cursor:pointer}
+.stepper button:disabled{color:#C9CDD2}
+.stepper output{min-width:70px;text-align:center;font-family:var(--pop);font-size:22px}
+.stepper output small{font-family:'Zen Maru Gothic',sans-serif;font-size:13px;margin-left:2px}
+
+/* ボタン */
+.btn{width:100%;min-height:60px;border:2.5px solid var(--ink);border-radius:999px;background:var(--yellow);font-size:18px;font-weight:900;cursor:pointer;
+  box-shadow:0 5px 0 var(--ink);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .1s,box-shadow .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.btn:disabled{background:#E8E3D8;color:#9A9384;border-color:#C9C2B3;box-shadow:none;cursor:not-allowed}
+.btn.ghost{background:#fff}
+.spin{width:20px;height:20px;border-radius:50%;border:3px solid rgba(30,43,68,.25);border-top-color:var(--ink);animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.note{margin:12px 2px 0;font-size:11px;line-height:1.6;color:var(--ink-2)}
+
+/* 完了 */
+.done{text-align:center}
+.check{width:84px;height:84px;margin:4px auto 10px;border-radius:50%;background:var(--green);display:grid;place-items:center;border:3px solid var(--ink);animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+.done h2{margin:0 0 4px;font-family:var(--pop);font-weight:400;font-size:28px}
+.done .sub{margin:0 0 16px;font-size:14px;color:var(--ink-2)}
+.ticket{position:relative;margin:0 auto 16px;border:2.5px solid var(--ink);border-radius:16px;background:#fff;overflow:hidden;text-align:left}
+.ticket .th{background:var(--ink);color:#fff;padding:10px 16px;font-size:12px;display:flex;justify-content:space-between}
+.ticket .idn{padding:14px 16px 6px;border-bottom:2px dashed var(--line);text-align:center}
+.ticket .idn small{display:block;font-size:11px;color:var(--ink-2)}
+.ticket .idn b{font-family:var(--pop);font-weight:400;font-size:40px;letter-spacing:.06em}
+.ticket dl{margin:0;padding:12px 16px 14px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.ticket dt{color:var(--ink-2);font-size:12px;align-self:center}
+.ticket dd{margin:0}
+.ticket dd.big{font-family:var(--pop);font-size:18px}
+.todo{list-style:none;margin:0 0 18px;padding:12px 14px;border-radius:14px;background:#FFF6DA;border:2px solid var(--yellow);text-align:left;font-size:13px;line-height:1.7}
+.todo li{position:relative;padding-left:16px}
+.todo li::before{content:"●";position:absolute;left:0;top:1px;color:#E0A526;font-size:10px}
+
+/* トースト */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,140%);width:min(92vw,480px);padding:14px 16px;border-radius:14px;
+  background:var(--ink);color:#fff;font-size:14px;line-height:1.6;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.3,1.3,.5,1);z-index:10}
+.toast.on{transform:translate(-50%,0)}
+.toast.warn{background:var(--red)}
+.demo{margin:0 0 12px;padding:8px 12px;border-radius:10px;background:#FFF6DA;border:1.5px dashed #E0A526;font-size:11px;color:#7A5B12}
+.hide{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.foot{margin-top:22px;text-align:center;font-size:11px;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="demo hide" id="demo">これはデザイン確認用のデモです。予約は保存されません。</p>
+
+  <div class="top"><span class="tag dark">島風Lab</span><span class="tag line">ワークショップ予約</span></div>
+  <h1>3Dプリンターで<br><span class="hl">なまえいりコースター</span>を<br>つくろう！</h1>
+  <div class="meta">
+    <span>参加 <b>無料</b></span><span>1回 <b>約30〜45分</b></span><span>1回 <b>2名まで</b></span>
+  </div>
+
+  <ol class="steps" id="steps" aria-label="予約の流れ">
+    <li data-s="1">時間をえらぶ</li><li data-s="2">お名前を入力</li><li data-s="3">予約完了</li>
+  </ol>
+
+  <!-- STEP 1 -->
+  <section id="s1" class="card" aria-labelledby="s1h">
+    <p class="q" id="s1h"><span class="n">1</span>日にちをえらぶ</p>
+    <div class="days" id="days" role="group" aria-label="日にち"></div>
+    <p class="q"><span class="n">2</span>時間をえらぶ</p>
+    <div class="legend" aria-hidden="true">
+      <span><i style="background:var(--green)"></i>あき</span>
+      <span><i style="background:var(--red)"></i>のこり1名</span>
+      <span><i style="background:#C9CDD2"></i>満員・受付終了</span>
+    </div>
+    <div class="slots" id="slots"></div>
+    <p class="updated" aria-live="polite"><span id="updated">空き状況を確認中…</span><button type="button" id="reload">さいしんにする</button></p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="s2" class="card hide" aria-labelledby="s2h">
+    <div class="chosen">
+      <div class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div><div class="t1" id="cDay"></div><div class="t2" id="cTime"></div></div>
+      <button type="button" id="change">変更</button>
+    </div>
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="name">お名前 <span class="req">必須</span></label>
+        <input id="name" name="name" autocomplete="name" placeholder="例）しまかぜ たろう" maxlength="40" required>
+        <span class="hint">ひらがな・カタカナ・漢字 どれでもOK</span>
+      </div>
+      <div class="field">
+        <label for="tel">電話番号 <span class="opt">任意</span></label>
+        <input id="tel" name="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="例）090-1234-5678" maxlength="20">
+        <span class="hint">時間になってもお見えにならないときに、ご連絡することがあります</span>
+      </div>
+      <button class="btn" type="submit" id="submit">この内容で予約する</button>
+      <p class="note">送信すると、予約がスタッフに届きます。入力いただいた情報は、このワークショップの受付にだけ使います。</p>
+    </form>
+  </section>
+
+  <!-- STEP 3 -->
+  <section id="s3" class="card done hide" aria-live="polite">
+    <div class="check" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2>受け付けました！</h2>
+    <p class="sub">ご予約ありがとうございます</p>
+    <div class="ticket">
+      <div class="th"><span>3Dプリンター ワークショップ</span><span>予約票</span></div>
+      <div class="idn"><small>予約番号</small><b id="tId"></b></div>
+      <dl>
+        <dt>日にち</dt><dd id="tDay"></dd>
+        <dt>時間</dt><dd class="big" id="tTime"></dd>
+        <dt>お名前</dt><dd id="tName"></dd>
+      </dl>
+    </div>
+    <ul class="todo">
+      <li>この画面を<b>スクリーンショット</b>しておいてください</li>
+      <li>開始<b>5分前</b>までに 3Dプリンターのブースへお越しください</li>
+      <li>受付で<b>予約番号</b>をスタッフにお見せください</li>
+    </ul>
+  </section>
+
+  <p class="foot">第37回 宜野湾市産業まつり ／ かりゆし塾1班「島風Lab」</p>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+/* ---------- サーバーとのやりとり（Apps Script 上なら google.script.run、そうでなければデモ） ---------- */
+/* GitHub Pages などで公開するときは、Apps Script の「ウェブアプリのURL（/exec で終わる）」をここに入れる */
+const API_URL = 'https://script.google.com/macros/s/AKfycbx3PrzRZXgNVWU5U_k5mPd4rOCh1G9EKKGHXF32jB3z_ADjDe2ScGwyrwnPU1YPOREnOg/exec';
+
+let preAv = null;
+const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
+const MODE = IS_GAS ? 'gas' : API_URL ? 'api' : 'demo';
+async function call(fn, arg){
+  if (MODE === 'gas') return new Promise((ok, ng) => { const r = google.script.run.withSuccessHandler(ok).withFailureHandler(ng); arg === undefined ? r[fn]() : r[fn](arg); });
+  if (MODE === 'api'){
+    const res = fn === 'reserve'
+      ? await fetch(API_URL, {method:'POST', body:JSON.stringify(arg)})          // text/plain で送る（Apps Script の CORS 対策）
+      : await fetch(API_URL + '?action=' + (fn === 'getConfig' ? 'init' : 'availability') + '&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (fn === 'getConfig'){ preAv = data.availability; return data.config; }   // 設定と空き状況を1回で受け取る
+    return data;
+  }
+  return Demo[fn](arg);
+}
+const Demo = (() => {
+  const cfg = {title:'3Dプリンター ワークショップ', capacity:2,
+    dates:[{date:'2026-11-21',label:'11月21日（土）',short:'21日（土）'},{date:'2026-11-22',label:'11月22日（日）',short:'22日（日）'}],
+    slots:{}};
+  const base = [['09:00','09:45'],['10:15','11:00'],['11:30','12:15'],['12:45','13:30'],['14:00','14:45'],['15:15','16:00'],['16:15','17:00']];
+  cfg.dates.forEach(d => { cfg.slots[d.date] = base.map((t, i) => ({no:i + 1, start:t[0], end:t[1], cap:2})); });
+  const taken = {'2026-11-21|1':2,'2026-11-21|2':1,'2026-11-21|4':2,'2026-11-21|5':1,'2026-11-22|1':1,'2026-11-22|3':2};
+  const wait = (v) => new Promise(r => setTimeout(() => r(v), 350));
+  return {
+    getConfig: () => wait(cfg),
+    getAvailability: () => { const out = {}; cfg.dates.forEach(d => cfg.slots[d.date].forEach(s => { const k = d.date + '|' + s.no, t = taken[k] || 0; out[k] = {taken:t, cap:s.cap, left:s.cap - t, closed:false}; }));
+      return wait({slots:out}); },
+    reserve: (f) => { const k = f.date + '|' + f.no, t = taken[k] || 0;
+      if (t >= cfg.capacity) return wait({ok:false, reason:'full', message:'ごめんなさい。この回はちょうど満員になりました。'});
+      taken[k] = t + 1; const d = cfg.dates.find(x => x.date === f.date), s = cfg.slots[f.date].find(x => x.no === f.no);
+      return wait({ok:true, reservation:{id:f.date.slice(8) + '-' + f.no + '-' + 'AB'[t], dateLabel:d.label, no:f.no, time:s.start + '〜' + s.end, name:f.name}}); }
+  };
+})();
+
+/* ---------- 状態 ---------- */
+const $ = (s) => document.querySelector(s);
+const st = {cfg:null, av:{}, date:null, slot:null, sending:false};
+const pad = (n) => String(n).padStart(2, '0');
+const slotsOf = (date) => (st.cfg.slots[date] || []);
+
+function setStep(n){
+  ['s1','s2','s3'].forEach((id, i) => $('#' + id).classList.toggle('hide', i + 1 !== n));
+  document.querySelectorAll('#steps li').forEach(li => { const k = +li.dataset.s; li.classList.toggle('on', k === n); li.classList.toggle('done', k < n); });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function toast(msg, warn){ const t = $('#toast'); t.textContent = msg; t.classList.toggle('warn', !!warn); t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 4200); }
+
+function dayLeft(date){ return slotsOf(date).reduce((a, s) => { const v = st.av[date + '|' + s.no]; return a + (v && !v.closed ? v.left : 0); }, 0); }
+function renderDays(){
+  $('#days').innerHTML = st.cfg.dates.map(d => {
+    const m = d.label.match(/(\d+)月(\d+)日（(.)）/), left = dayLeft(d.date);
+    return '<button type="button" class="day" data-date="' + d.date + '" aria-pressed="' + (d.date === st.date) + '">'
+      + '<span class="w">' + m[1] + '月</span><span class="d">' + m[2] + '日（' + m[3] + '）</span>'
+      + '<span class="r">' + (left > 0 ? 'あと ' + left + ' 名 予約できます' : '受付は終了しました') + '</span></button>';
+  }).join('');
+  document.querySelectorAll('.day').forEach(b => b.addEventListener('click', () => { st.date = b.dataset.date; renderDays(); renderSlots(); }));
+}
+function renderSlots(){
+  $('#slots').innerHTML = slotsOf(st.date).map(s => {
+    const v = st.av[st.date + '|' + s.no] || {taken:0, cap:s.cap, left:s.cap, closed:false};
+    const cap = v.cap != null ? v.cap : s.cap;
+    const state = v.closed ? 'closed' : v.left <= 0 ? 'full' : v.left === 1 ? 'last' : 'ok';
+    const label = {ok:'あと ' + v.left + ' 名', last:'のこり1名！', full:'満員', closed:'受付終了'}[state];
+    const dots = Array.from({length:cap}, (_, i) => '<i class="' + (i < v.taken ? 'taken' : 'free') + '"></i>').join('');
+    const dis = state === 'full' || state === 'closed';
+    return '<button type="button" class="slot is-' + state + '" data-no="' + s.no + '"' + (dis ? ' disabled aria-disabled="true"' : '')
+      + ' aria-label="第' + s.no + '回 ' + s.start + 'から' + s.end + ' ' + label + '">'
+      + '<span class="no">第<b>' + s.no + '</b>回</span>'
+      + '<span class="tm">' + s.start.replace(/^0/, '') + '<small>〜' + s.end.replace(/^0/, '') + '</small></span>'
+      + '<span class="seats"><span class="dots" aria-hidden="true">' + dots + '</span><span class="badge ' + state + '">' + label + '</span></span></button>';
+  }).join('');
+  document.querySelectorAll('.slot:not([disabled])').forEach(b => b.addEventListener('click', () => pickSlot(+b.dataset.no)));
+}
+async function loadAvailability(quiet){
+  try {
+    const r = preAv || await call('getAvailability'); preAv = null;
+    st.av = r.slots;
+    const d = new Date();
+    $('#updated').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' 時点の空き状況';
+    if (!st.date){
+      st.date = (st.cfg.dates.find(x => dayLeft(x.date) > 0) || st.cfg.dates[0]).date;
+    }
+    renderDays(); renderSlots();
+  } catch (e){ if (!quiet) toast('空き状況を読みこめませんでした。電波のよい場所でもう一度お試しください。', true); }
+}
+
+function pickSlot(no){
+  st.slot = slotsOf(st.date).find(s => s.no === no);
+  const d = st.cfg.dates.find(x => x.date === st.date);
+  $('#cDay').textContent = d.label + '　第' + no + '回';
+  $('#cTime').textContent = st.slot.start.replace(/^0/, '') + ' 〜 ' + st.slot.end.replace(/^0/, '');
+  const v = st.av[st.date + '|' + no];
+  if (v && v.left === 1) toast('この回は のこり1名です。お早めにどうぞ！', true);
+  setStep(2);
+  setTimeout(() => $('#name').focus({preventScroll:true}), 350);
+}
+
+async function submit(e){
+  e.preventDefault();
+  if (st.sending) return;
+  const name = $('#name').value.trim();
+  if (!name){ $('#name').focus(); toast('お名前を入力してください', true); return; }
+  st.sending = true;
+  const btn = $('#submit'); btn.disabled = true; btn.innerHTML = '<span class="spin" aria-hidden="true"></span>送信中…';
+  try {
+    const r = await call('reserve', {date:st.date, no:st.slot.no, name:name, tel:$('#tel').value.trim()});
+    if (r.ok){
+      const x = r.reservation;
+      $('#tId').textContent = x.id; $('#tDay').textContent = x.dateLabel + '　第' + x.no + '回';
+      $('#tTime').textContent = x.time.replace(/(^|〜)0/g, '$1'); $('#tName').textContent = x.name + ' さま';
+      $('#toast').classList.remove('on'); setStep(3);
+      loadAvailability(true);
+    } else {
+      toast(r.message || '予約できませんでした。', true);
+      if (r.reason === 'full' || r.reason === 'closed'){ await loadAvailability(true); setStep(1); }
+    }
+  } catch (err){
+    toast('送信できませんでした。電波のよい場所でもう一度お試しください。', true);
+  } finally {
+    st.sending = false; btn.disabled = false; btn.textContent = 'この内容で予約する';
+  }
+}
+
+async function init(){
+  if (MODE === 'demo') $('#demo').classList.remove('hide');
+  st.cfg = await call('getConfig');
+  setStep(1);
+  await loadAvailability();
+  setInterval(() => { if (!$('#s1').classList.contains('hide')) loadAvailability(true); }, 20000);
+}
+$('#reload').addEventListener('click', () => loadAvailability());
+$('#change').addEventListener('click', () => { setStep(1); loadAvailability(true); });
+$('#form').addEventListener('submit', submit);
+init();
+</script>
+</body>
+</html>
